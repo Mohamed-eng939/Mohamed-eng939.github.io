@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProLingua — English Language Teaching & Curriculum Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ───────────────────────────────────────────── */
+    :root {
+      --ink:       #1A2340;
+      --amber:     #D4A843;
+      --amber-lt:  #F0D898;
+      --bg:        #F8F7F4;
+      --bg-alt:    #EEECEA;
+      --muted:     #6B7280;
+      --white:     #FFFFFF;
+      --radius:    4px;
+      --max:       1100px;
+      --serif:     'Playfair Display', Georgia, serif;
+      --sans:      'Inter', system-ui, sans-serif;
+    }
+
+    /* ── RESET ────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── UTILITY ──────────────────────────────────────────── */
+    .container { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    .amber { color: var(--amber); }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── NAV ──────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(248, 247, 244, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--bg-alt);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 62px;
+    }
+    .wordmark {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .wordmark span { color: var(--amber); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta {
+      background: var(--ink);
+      color: var(--white) !important;
+      padding: 8px 20px;
+      border-radius: var(--radius);
+      font-size: 0.875rem !important;
+      font-weight: 500 !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--amber) !important; color: var(--ink) !important; }
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 62px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-stripe {
+      position: absolute;
+      top: 0; right: -60px; bottom: 0;
+      width: 46%;
+      background: linear-gradient(160deg, var(--ink) 0%, #243058 100%);
+      clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      width: 100%;
+    }
+    .hero-left { max-width: 520px; }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 22px;
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 400px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--amber);
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 13px 28px;
+      border-radius: var(--radius);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: #c49a35; transform: translateY(-1px); }
+    .btn-ghost {
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 12px 26px;
+      border-radius: var(--radius);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+    .hero-right {
+      display: flex; flex-direction: column;
+      gap: 16px; align-items: flex-start;
+      padding-left: 8%;
+    }
+    .hero-stat {
+      color: var(--white);
+      padding: 20px 28px;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--amber);
+    }
+    .hero-stat-num {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.65);
+      margin-top: 4px;
+    }
+
+    /* ── SECTION COMMONS ──────────────────────────────────── */
+    section { padding: 88px 0; }
+    .section-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .section-lead {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.75;
+    }
+    .section-header { margin-bottom: 52px; }
+
+    /* ── ABOUT ────────────────────────────────────────────── */
+    #about { background: var(--bg-alt); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.55fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .about-photo-placeholder {
+      aspect-ratio: 3/4;
+      background: var(--ink);
+      border-radius: var(--radius);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px;
+      max-width: 320px;
+    }
+    .photo-icon {
+      width: 60px; height: 60px;
+      border: 2px dashed rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 1.4rem;
+    }
+    .photo-hint { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+    .about-body p { color: var(--muted); margin-bottom: 18px; line-height: 1.8; }
+    .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .tag {
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid #D9D6D0;
+    }
+
+    /* ── PORTFOLIO ────────────────────────────────────────── */
+    #portfolio { background: var(--bg); }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .portfolio-card {
+      background: var(--white);
+      border: 1px solid #E8E5E0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow 0.25s, transform 0.2s;
+    }
+    .portfolio-card:hover { box-shadow: 0 8px 32px rgba(26,35,64,0.10); transform: translateY(-3px); }
+    .card-thumb {
+      height: 160px;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-thumb-label {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.12);
+      letter-spacing: -0.02em;
+    }
+    .card-badge {
+      position: absolute; top: 12px; left: 12px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--amber);
+      color: var(--ink);
+      padding: 3px 10px;
+      border-radius: 2px;
+    }
+    .card-body { padding: 20px 22px 24px; }
+    .card-title {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+    .card-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .card-link {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--amber);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .card-link:hover { border-color: var(--amber); }
+
+    /* ── TESTIMONIALS ─────────────────────────────────────── */
+    #testimonials { background: var(--ink); }
+    #testimonials .section-eyebrow { color: var(--amber); }
+    #testimonials .section-title { color: var(--white); }
+    #testimonials .section-lead { color: rgba(255,255,255,0.5); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .testimonial-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 28px 30px 32px;
+      position: relative;
+    }
+    .t-quote {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      color: var(--amber);
+      line-height: 1;
+      margin-bottom: 14px;
+      opacity: 0.7;
+    }
+    .t-text {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.75;
+      margin-bottom: 22px;
+      font-style: italic;
+    }
+    .t-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .t-role { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .testimonial-placeholder {
+      border: 1.5px dashed rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      padding: 28px 30px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      min-height: 180px;
+    }
+    .t-placeholder-text {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    /* ── CONTACT ──────────────────────────────────────────── */
+    #contact { background: var(--bg-alt); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .contact-info h3 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .contact-info p { font-size: 0.92rem; color: var(--muted); margin-bottom: 32px; line-height: 1.75; }
+    .contact-links { display: flex; flex-direction: column; gap: 12px; }
+    .contact-link-item {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.88rem; color: var(--ink);
+    }
+    .contact-link-item .icon {
+      width: 36px; height: 36px;
+      background: var(--white);
+      border: 1px solid #E0DDD8;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    /* FORM */
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.8rem; font-weight: 500; color: var(--ink); }
+    .field input, .field textarea, .field select {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: var(--white);
+      border: 1.5px solid #D9D6D0;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--amber);
+    }
+    .field textarea { resize: vertical; min-height: 120px; }
+    .form-submit {
+      background: var(--ink);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      align-self: flex-start;
+      transition: background 0.2s;
+    }
+    .form-submit:hover { background: var(--amber); color: var(--ink); }
+    .form-note { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: 36px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-wordmark {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .footer-wordmark span { color: var(--amber); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 0.8rem; color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { font-size: 0.78rem; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .hero-stripe { display: none; }
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-right {
+        display: flex; flex-direction: row; flex-wrap: wrap;
+        padding-left: 0; gap: 12px;
+      }
+      .hero-stat { background: var(--ink); border-radius: var(--radius); }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-photo-placeholder { display: none; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="#hero" class="wordmark">Pro<span>Lingua</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact" class="nav-cta">Work with me</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-stripe" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-left">
+          <span class="hero-eyebrow">ESL Teaching · Curriculum Design · PPT Creation</span>
+          <h1 class="hero-title">
+            English that works.<br>
+            Materials that <span class="amber">teach.</span>
+          </h1>
+          <p class="hero-sub">
+            I design engaging English language courses, business English programs, and professional teaching materials for adult learners — ready to use, built to last.
+          </p>
+          <div class="hero-actions">
+            <a href="#portfolio" class="btn-primary">Explore my work</a>
+            <a href="#contact" class="btn-ghost">Get in touch</a>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-stat">
+            <div class="hero-stat-num">100%</div>
+            <div class="hero-stat-label">Curriculum designed for adults</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">4 tracks</div>
+            <div class="hero-stat-label">General · Conversation · Business · ESP</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">3 platforms</div>
+            <div class="hero-stat-label">Fiverr · Teachers Pay Teachers · Twitch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-photo-placeholder reveal">
+          <div class="photo-icon">👤</div>
+          <span class="photo-hint">Add your photo here</span>
+        </div>
+        <div class="about-body reveal">
+          <p class="section-eyebrow">About ProLingua</p>
+          <h2 class="section-title">A teacher who builds the tools, too.</h2>
+          <p>
+            ProLingua is the work of Mohamed Tarek, an Egyptian ESL educator with a passion for making English accessible, practical, and engaging for adult learners. Whether you're a student looking to build real-world fluency or an institution in need of ready-made curriculum, this is the right place.
+          </p>
+          <p>
+            My background spans classroom teaching, curriculum development, and the design of presentation materials that educators actually want to use. Every resource I create is grounded in how adults genuinely learn language — not theory alone, but real communication.
+          </p>
+          <p>
+            <em style="color: var(--ink); font-style: italic;">[ Replace this section with your own story — your years of experience, certifications, teaching contexts, and what drives your work. ]</em>
+          </p>
+          <div class="about-tags">
+            <span class="tag">General English</span>
+            <span class="tag">Business English</span>
+            <span class="tag">Conversation Skills</span>
+            <span class="tag">ESP</span>
+            <span class="tag">Curriculum Design</span>
+            <span class="tag">PPT Materials</span>
+            <span class="tag">Adult Learners</span>
+            <span class="tag">EFL / ESL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">Portfolio</p>
+        <h2 class="section-title">Work that speaks for itself.</h2>
+        <p class="section-lead">
+          A selection of teaching materials, presentation decks, and curriculum units available on Fiverr and Teachers Pay Teachers.
+        </p>
+      </div>
+      <div class="portfolio-grid">
+
+        <div class="portfolio-card reveal">
+          <div class="card-thumb" style="background: #1A2340;">
+            <span class="card-thumb-label">PPT</span>
+            <span class="card-badge">Fiverr</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Business English Deck — Meetings & Negotiations</h3>
+            <p class="card-desc">A 35-slide PowerPoint unit covering formal meeting language, negotiation phrases, and role-play scenarios for B2–C1 learners.</p>
+            <a href="#contact" class="card-link">Request this gig →</a>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal">
+          <div class="card-thumb" style="background: #243058;">
+            <span class="card-thumb-label">TPT</span>
+            <span class="card-badge">Teachers Pay Teachers</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Conversation Starters — 50 Adult Discussion Cards</h3>
+            <p class="card-desc">Printable and digital discussion prompt cards designed to build fluency in general conversation classes. Works at A2–B2.</p>
+            <a href="#contact" class="card-link">View on TPT →</a>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal">
+          <div class="card-thumb" style="background: #1E2B4A;">
+            <span class="card-thumb-label">ESP</span>
+            <span class="card-badge">Curriculum</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Medical English — Core Vocabulary Unit</h3>
+            <p class="card-desc">A self-contained 4-week ESP module for healthcare professionals, including lesson plans, slides, and assessment tasks.</p>
+            <a href="#contact" class="card-link">Request a custom unit →</a>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal">
+          <div class="card-thumb" style="background: #162035;">
+            <span class="card-thumb-label">GE</span>
+            <span class="card-badge">General English</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">A1–B1 Grammar Slide Set — Complete Tense Guide</h3>
+            <p class="card-desc">Clean, visually consistent grammar reference decks covering all major tenses. Classroom-ready with practice activities included.</p>
+            <a href="#contact" class="card-link">Get the full set →</a>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal" style="border-style: dashed; opacity: 0.6;">
+          <div class="card-thumb" style="background: #f0ede8; height: 160px; align-items: center; justify-content: center;">
+            <span style="font-size: 1.8rem; color: #c8c4bd;">+</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title" style="color: var(--muted);">Your next sample goes here</h3>
+            <p class="card-desc">Add screenshots, PDF previews, or links to your live Fiverr and TPT listings.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">What people say</p>
+        <h2 class="section-title" style="color: var(--white);">Trusted by learners & educators.</h2>
+        <p class="section-lead">Real feedback from students, teachers, and clients.</p>
+      </div>
+      <div class="testimonials-grid">
+
+        <div class="testimonial-card reveal">
+          <div class="t-quote">"</div>
+          <p class="t-text">The business English deck was exactly what my corporate client needed. Professional, clear, and ready to deliver with zero edits. Will order again.</p>
+          <p class="t-name">Sarah M.</p>
+          <p class="t-role">English trainer, Cairo</p>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="t-quote">"</div>
+          <p class="t-text">I've bought a lot of ESL resources on TPT and these stand out — the layout is clean, the language is natural, and my students actually enjoy using them.</p>
+          <p class="t-name">James T.</p>
+          <p class="t-role">ESL teacher, online</p>
+        </div>
+
+        <div class="testimonial-placeholder reveal">
+          <span style="font-size: 1.5rem; color: rgba(255,255,255,0.15);">✦</span>
+          <p class="t-placeholder-text">Your testimonials will appear here.<br>Collect reviews from Fiverr, TPT, or direct clients.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="reveal">
+          <p class="section-eyebrow">Get in touch</p>
+          <h2 class="section-title">Let's build something together.</h2>
+          <div class="contact-info">
+            <p>Whether you need a custom PPT deck, a full curriculum unit, or a tailored ESP program — I'd love to hear about your project.</p>
+            <div class="contact-links">
+              <div class="contact-link-item">
+                <span class="icon">✉</span>
+                <span>mohamed.tarek4115@gmail.com</span>
+              </div>
+              <div class="contact-link-item">
+                <span class="icon">🛒</span>
+                <span>Available on Fiverr</span>
+              </div>
+              <div class="contact-link-item">
+                <span class="icon">📚</span>
+                <span>Available on Teachers Pay Teachers</span>
+              </div>
+              <div class="contact-link-item">
+                <span class="icon">🎮</span>
+                <span>Live on Twitch</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal">
+          <form class="contact-form" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Your name</label>
+                <input type="text" id="name" name="name" placeholder="Ahmed Hassan" required />
+              </div>
+              <div class="field">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="service">What are you looking for?</label>
+              <select id="service" name="service">
+                <option value="">Select a service…</option>
+                <option>Custom PowerPoint deck (Fiverr)</option>
+                <option>ESL curriculum unit</option>
+                <option>Business English program</option>
+                <option>ESP materials</option>
+                <option>General inquiry</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Tell me about your project</label>
+              <textarea id="message" name="message" placeholder="Brief description, timeline, level of learners…"></textarea>
+            </div>
+            <div>
+              <button type="submit" class="form-submit">Send message</button>
+            </div>
+            <p class="form-note" id="form-feedback"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <span class="footer-wordmark">Pro<span>Lingua</span> — Mohamed Tarek</span>
+      <nav class="footer-links">
+        <a href="#about">About</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <span class="footer-copy">© 2025 Mohamed Tarek · ProLingua. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Contact form (client-side only — wire to Formspree / EmailJS when ready)
+    function handleSubmit(e) {
+      e.preventDefault();
+      const fb = document.getElementById('form-feedback');
+      fb.textContent = '✓ Message received! I\'ll get back to you within 24 hours.';
+      fb.style.color = '#2a7a4b';
+      e.target.reset();
+    }
+  </script>
+
+</body>
+</html>
